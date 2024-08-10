@@ -1,6 +1,6 @@
 {
   "name": "bulkai",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "index.js",
   "bin": {
     "bulkai": "./index.js"
@@ -8,7 +8,13 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["markdown", "openai", "automation", "text-processing", "cli-tool"],
+  "keywords": [
+    "markdown",
+    "openai",
+    "automation",
+    "text-processing",
+    "cli-tool"
+  ],
   "author": "Your Name <your.email@example.com>",
   "license": "MIT",
   "description": "BulkAI is a powerful Node.js CLI tool designed to automate the processing of markdown and text files using OpenAI's GPT-4.",

@@ -1,5 +1,5 @@
 {
-  "name": "bulkai",
+  "name": "mdbulkai",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -22,9 +22,9 @@
     "bulkai": "^1.2.3",
     "openai": "^4.55.4"
   },
-  "description": "BulkAI is a command line tool that allows you to bulk process text data using OpenAI's GPT-4o API.",
+  "description": "MDBulkAI is a command line tool that allows you to bulk process text data using OpenAI's GPT-4o API.",
   "type": "module",
   "bin": {
-    "bulkai": "index.js"
+    "mdbulkai": "index.js"
   }
 }

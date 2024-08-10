@@ -1,30 +1,22 @@
 {
-  "name": "mdbulkai",
-  "version": "1.0.1",
+  "name": "bulkai",
+  "version": "1.0.0",
   "main": "index.js",
+  "bin": {
+    "bulkai": "./index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/vvmspace/bulkai.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/vvmspace/bulkai/issues"
-  },
-  "homepage": "https://github.com/vvmspace/bulkai#readme",
+  "keywords": ["markdown", "openai", "automation", "text-processing", "cli-tool"],
+  "author": "Your Name <your.email@example.com>",
+  "license": "MIT",
+  "description": "BulkAI is a powerful Node.js CLI tool designed to automate the processing of markdown and text files using OpenAI's GPT-4.",
   "dependencies": {
     "commander": "^12.1.0",
     "fs-extra": "^11.2.0",
-    "bulkai": "^1.2.3",
+    "node-recursive-directory": "^1.2.3",
     "openai": "^4.55.4"
   },
-  "description": "MDBulkAI is a command line tool that allows you to bulk process text data using OpenAI's GPT-4o API.",
-  "type": "module",
-  "bin": {
-    "mdbulkai": "index.js"
-  }
+  "type": "module"
 }

@@ -1,0 +1,30 @@
+{
+  "name": "bulkai",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vvmspace/bulkai.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vvmspace/bulkai/issues"
+  },
+  "homepage": "https://github.com/vvmspace/bulkai#readme",
+  "dependencies": {
+    "commander": "^12.1.0",
+    "fs-extra": "^11.2.0",
+    "bulkai": "^1.2.3",
+    "openai": "^4.55.4"
+  },
+  "description": "BulkAI is a command line tool that allows you to bulk process text data using OpenAI's GPT-4o API.",
+  "type": "module",
+  "bin": {
+    "bulkai": "index.js"
+  }
+}

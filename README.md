@@ -12,13 +12,13 @@ Don't wait—experience the difference BulkAI can make in your workflow today!
 No installation required! You can run BulkAI directly using `npx`:
 
 ```bash
-npx mdbulkai [options]
+npx bulkai -i input-dir -o output-dir [options]
 ```
 
 ### Example Command
 
 ```bash
-npx mdbulkai -p prefix.md -s suffix.md -i ./input -o ./output -f -H -e .md,.txt
+npx bulkai -p prefix.md -s suffix.md -i ./input -o ./output -f -H -e .md,.txt
 ```
 
 ### Command-Line Options

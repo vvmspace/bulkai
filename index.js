@@ -16,12 +16,12 @@ const program = new Command();
 program
   .option('-p, --prefix-file <path>', 'Prefix file to be added to the beginning of each file content')
   .option('-s, --suffix-file <path>', 'Suffix file to be added to the end of each file content')
-  .option('-x, --excluded <path>', 'Excluded file to be skipped')
   .option('-i, --input-dir <path>', 'Input directory containing files to be processed')
   .option('-o, --output-dir <path>', 'Output directory where the processed files will be saved')
   .option('-f, --force', 'Force overwrite existing files in the output directory')
   .option('-H, --hugo', 'Enable Hugo front matter processing by removing everything before the first "---" in the AI response')
   .option('-e, --extensions <extensions>', 'Comma-separated list of file extensions to process', '.md,.txt')
+  .option('-x, --excluded <parts>', 'Excluded file to be skipped')
   .on('--help', () => {
     console.log('');
     console.log('Example usage:');

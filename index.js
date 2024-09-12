@@ -21,6 +21,7 @@ program
   .option('-f, --force', 'Force overwrite existing files in the output directory')
   .option('-H, --hugo', 'Enable Hugo front matter processing by removing everything before the first "---" in the AI response')
   .option('-e, --extensions <extensions>', 'Comma-separated list of file extensions to process', '.md,.txt')
+  .option('-x, --excluded <parts>', 'Excluded file to be skipped')
   .on('--help', () => {
     console.log('');
     console.log('Example usage:');
@@ -53,8 +54,13 @@ if (!process.env.OPENAI_API_KEY) {
 const prefix = options.prefixFile ? await fs.readFile(options.prefixFile, 'utf8') : '';
 const suffix = options.suffixFile ? await fs.readFile(options.suffixFile, 'utf8') : '';
 
+const inputPath = path.resolve(options.inputDir);
+
 // Parse extensions
 const extensions = options.extensions.split(',').map(ext => ext.trim());
+
+// Parse excluded
+const excluded = options.excluded.split(',').map(path => path.trim());
 
 // Check for required options
 if (!options.inputDir || !options.outputDir) {
@@ -68,8 +74,12 @@ const openai = new OpenAI({
 });
 
 async function processFile(filePath, outputDir, force, hugo) {
-  const fileName = path.basename(filePath);
-  const outputPath = path.join(outputDir, fileName);
+  const outputFilePath = path.resolve(filePath).replace(inputPath, '');
+  // outputPath preserves directory structure
+  const outputPath = path.join(outputDir, outputFilePath);
+  const outputFileDir = path.dirname(outputPath);
+  // create output directory if it doesn't exist
+  await fs.ensureDir(outputFileDir);
 
   if (!force && await fs.pathExists(outputPath)) {
     console.log(`File already exists: ${outputPath}`);
@@ -105,13 +115,21 @@ async function processFile(filePath, outputDir, force, hugo) {
   console.log(`Processed and saved: ${outputPath}`);
 }
 
+// check if filePath contains excluded file or directory
+function isExcluded(filePath) {
+  return excluded.some(exclude => filePath.includes(exclude));
+}
+
 async function main() {
-  const files = await scanner(options.inputDir);
+  const files = await scanner(inputPath);
 
   for (const file of files) {
-    if (extensions.includes(path.extname(file))) {
-      await processFile(file, options.outputDir, options.force, options.hugo);
+    if (!extensions.includes(path.extname(file))) continue;
+    if (isExcluded(file)) {
+      console.log(`Excluded: ${file}`);
+      continue;
     }
+    await processFile(file, options.outputDir, options.force, options.hugo);
   }
 }
 

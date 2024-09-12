@@ -30,6 +30,7 @@ npx bulkai -p prefix.md -s suffix.md -i ./input -o ./output -f -H -e .md,.txt
 -   **`-f, --force`**: Force overwrite of existing files in the output directory.
 -   **`-H, --hugo`**: Enable Hugo front matter processing.
 -   **`-e, --extensions <extensions>`**: Comma-separated list of file extensions to process (default: `.md,.txt`).
+-   **`-x, --excluded <extensions>`**: Comma-separated list of path parts to exclude from processing (e.g., `/.,_private`).
 
 ## Introduction
 

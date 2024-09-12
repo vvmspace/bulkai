@@ -16,6 +16,7 @@ const program = new Command();
 program
   .option('-p, --prefix-file <path>', 'Prefix file to be added to the beginning of each file content')
   .option('-s, --suffix-file <path>', 'Suffix file to be added to the end of each file content')
+  .option('-x, --excluded <path>', 'Excluded file to be skipped')
   .option('-i, --input-dir <path>', 'Input directory containing files to be processed')
   .option('-o, --output-dir <path>', 'Output directory where the processed files will be saved')
   .option('-f, --force', 'Force overwrite existing files in the output directory')
@@ -53,8 +54,13 @@ if (!process.env.OPENAI_API_KEY) {
 const prefix = options.prefixFile ? await fs.readFile(options.prefixFile, 'utf8') : '';
 const suffix = options.suffixFile ? await fs.readFile(options.suffixFile, 'utf8') : '';
 
+const inputPath = path.resolve(options.inputDir);
+
 // Parse extensions
 const extensions = options.extensions.split(',').map(ext => ext.trim());
+
+// Parse excluded
+const excluded = options.excluded.split(',').map(path => path.trim());
 
 // Check for required options
 if (!options.inputDir || !options.outputDir) {
@@ -105,13 +111,21 @@ async function processFile(filePath, outputDir, force, hugo) {
   console.log(`Processed and saved: ${outputPath}`);
 }
 
+// check if filePath contains excluded file or directory
+function isExcluded(filePath) {
+  return excluded.some(exclude => filePath.includes(exclude));
+}
+
 async function main() {
-  const files = await scanner(options.inputDir);
+  const files = await scanner(inputPath);
 
   for (const file of files) {
-    if (extensions.includes(path.extname(file))) {
-      await processFile(file, options.outputDir, options.force, options.hugo);
+    if (!extensions.includes(path.extname(file))) continue;
+    if (isExcluded(file)) {
+      console.log(`Excluded: ${file}`);
+      continue;
     }
+    await processFile(file, options.outputDir, options.force, options.hugo);
   }
 }
 

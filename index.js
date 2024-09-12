@@ -74,8 +74,12 @@ const openai = new OpenAI({
 });
 
 async function processFile(filePath, outputDir, force, hugo) {
-  const fileName = path.basename(filePath);
-  const outputPath = path.join(outputDir, fileName);
+  const outputFilePath = path.resolve(filePath).replace(inputPath, '');
+  // outputPath preserves directory structure
+  const outputPath = path.join(outputDir, outputFilePath);
+  const outputFileDir = path.dirname(outputPath);
+  // create output directory if it doesn't exist
+  await fs.ensureDir(outputFileDir);
 
   if (!force && await fs.pathExists(outputPath)) {
     console.log(`File already exists: ${outputPath}`);

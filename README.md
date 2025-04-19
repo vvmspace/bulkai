@@ -18,7 +18,7 @@ npx bulkai -i input-dir -o output-dir [options]
 Or like:
 
 ```bash
-npx bulkai -p emma,---,./description.md,./semantics.md,./goals.md,---,article -s rewrite,shock,res-i ./input -o ./output
+npx bulkai -p emma,about.md,./semantics.md,./goals.md,---,article -s rewrite,shock,res-i ./input -o ./output
 ```
 
 ### Environment Variables

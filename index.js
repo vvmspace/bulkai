@@ -19,12 +19,15 @@ program
   .option('-i, --input-dir <path>', 'Input directory containing files to be processed')
   .option('-o, --output-dir <path>', 'Output directory where the processed files will be saved')
   .option('-f, --force', 'Force overwrite existing files in the output directory')
+  .option('-H, --hugo', 'Enable Hugo front matter processing by removing everything before the first "---" in the AI response')
   .option('-e, --extensions <extensions>', 'Comma-separated list of file extensions to process', '.md,.txt')
   .option('-x, --excluded <parts>', 'Excluded file to be skipped')
+  .option('-m, --multiple', 'Create multiple files from a single input file')
   .on('--help', () => {
     console.log('');
     console.log('Example usage:');
-    console.log('  npx bulkai -p prefix.txt -s suffix.txt -i ./input -o ./output -f -e .md,.txt');
+    console.log('  npx bulkai -p prefix.txt -s suffix.txt -i ./input -o ./output -f -H -e .md,.txt');
+    console.log('  npx bulkai -m -i ./input -o ./output -f -e .md,.txt');
   });
 
 program.parse(process.argv);
@@ -98,7 +101,7 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-async function processFile(filePath, outputDir, force) {
+async function processFile(filePath, outputDir, force, hugo, multiple) {
   const outputFilePath = path.resolve(filePath).replace(inputPath, '');
   // outputPath preserves directory structure
   const outputPath = path.join(outputDir, outputFilePath);
@@ -125,10 +128,39 @@ async function processFile(filePath, outputDir, force) {
 
   let aiResponse = completion.choices[0].message.content;
 
-  // Write the AI's response to the output directory
-  await fs.outputFile(outputPath, aiResponse);
+  // Hugo flag processing
+  if (hugo) {
+    const hugoMatch = aiResponse.match(/---/g);
+    if (hugoMatch && hugoMatch.length >= 2) {
+      const firstIndex = aiResponse.indexOf('---');
+      aiResponse = aiResponse.slice(firstIndex);
+    }
+  }
 
-  console.log(`Processed and saved: ${outputPath}`);
+  if (multiple) {
+    // Create multiple files based on sections
+    const sections = aiResponse.split(/\n(?=#{1,6}\s)/);
+    for (const section of sections) {
+      if (!section.trim()) continue;
+      
+      // Extract title from the first line
+      const titleMatch = section.match(/^#{1,6}\s+(.+)$/m);
+      if (!titleMatch) continue;
+      
+      const title = titleMatch[1]
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '');
+      
+      const sectionPath = path.join(outputFileDir, `${title}.md`);
+      await fs.outputFile(sectionPath, section);
+      console.log(`Created section: ${sectionPath}`);
+    }
+  } else {
+    // Write the AI's response to the output directory
+    await fs.outputFile(outputPath, aiResponse);
+    console.log(`Processed and saved: ${outputPath}`);
+  }
 }
 
 // check if filePath contains excluded file or directory
@@ -145,7 +177,7 @@ async function main() {
       console.log(`Excluded: ${file}`);
       continue;
     }
-    await processFile(file, options.outputDir, options.force);
+    await processFile(file, options.outputDir, options.force, options.hugo, options.multiple);
   }
 }
 

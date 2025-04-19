@@ -52,6 +52,47 @@ npx bulkai -p prefix.md -s suffix.md -i ./input -o ./output -f -H -e .md,.txt
 -   **`-H, --hugo`**: Enable Hugo front matter processing.
 -   **`-e, --extensions <extensions>`**: Comma-separated list of file extensions to process (default: `.md,.txt`).
 -   **`-x, --excluded <parts>`**: Comma-separated list of path parts to exclude from processing (e.g., `/.,_private`).
+-   **`-m, --multiple`**: Create multiple files from a single input file, splitting by markdown headers.
+
+### Multiple File Structure
+
+When using the `-m` flag, BulkAI will:
+
+1. Split the content by markdown headers (H1-H6)
+2. Create separate files for each section
+3. Use the header text as the filename (converted to kebab-case)
+4. Preserve the directory structure
+
+Example:
+
+```bash
+npx bulkai -m -i ./input -o ./output -f
+```
+
+If your input file contains:
+
+```markdown
+# Introduction
+
+Content here...
+
+# Getting Started
+
+More content...
+
+# Advanced Usage
+
+Even more content...
+```
+
+It will create:
+
+```
+output/
+  introduction.md
+  getting-started.md
+  advanced-usage.md
+```
 
 ## Introduction
 
@@ -70,25 +111,14 @@ Easily add custom prefixes and suffixes to your content before sending it to the
 You can specify multiple presets and files by comma-separating them:
 
 ```bash
-npx bulkai -p emma,rewrite,./tmp/file.md -s article,hugo -i ./input -o ./output
+npx bulkai -p emma,rewrite,./tmp/file.md -s article,--- -i ./input -o ./output
 ```
 
 The tool will:
 
-1. First look for presets in the `presets` directory (e.g., `emma.md`, `rewrite.md`, `hugo.md`)
+1. First look for presets in the `presets` directory (e.g., `emma.md`, `rewrite.md`)
 2. Then try to find files at the specified paths (e.g., `./tmp/file.md`)
 3. Combine all found content in the order specified
-
-Available presets:
-
--   `emma`: Emma's writing style and personality
--   `rewrite`: Content rewriting instructions
--   `hugo`: Hugo front matter processing
--   `article`: Article formatting
--   `---`: Front matter separator
--   `raw`: Raw content processing
--   `res`: Response formatting
--   `shock`: Shock content style
 
 ### 🚀 OpenAI GPT-4 Integration
 

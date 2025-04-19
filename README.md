@@ -3,7 +3,7 @@
 [![npm version](https://badge.fury.io/js/bulkai.svg)](https://www.npmjs.com/package/bulkai)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Are you tired of manually processing large sets of markdown files, or struggling to find the time to enhance your content with the latest AI technology? **BulkAI** is here to change the game. With just a few simple commands, you can transform how you manage and optimize your markdown and text files, all while harnessing the incredible power of OpenAI’s GPT-4. Whether you're looking to rewrite entire websites, translate books, or simply batch-process content with custom formatting, BulkAI makes it easier than ever.
+Are you tired of manually processing large sets of markdown files, or struggling to find the time to enhance your content with the latest AI technology? **BulkAI** is here to change the game. With just a few simple commands, you can transform how you manage and optimize your markdown and text files, all while harnessing the incredible power of OpenAI's GPT-4. Whether you're looking to rewrite entire websites, translate books, or simply batch-process content with custom formatting, BulkAI makes it easier than ever.
 
 Don't wait—experience the difference BulkAI can make in your workflow today!
 
@@ -13,6 +13,27 @@ No installation required! You can run BulkAI directly using `npx`:
 
 ```bash
 npx bulkai -i input-dir -o output-dir [options]
+```
+
+Or like:
+
+```bash
+npx bulkai -p emma,---,./description.md,./semantics.md,./goals.md,---,article -s rewrite,shock,res-i ./input -o ./output
+```
+
+### Environment Variables
+
+You can configure BulkAI using environment variables:
+
+-   `OPENAI_API_KEY`: Your OpenAI API key (required)
+-   `DEFAULT_MODEL`: The default OpenAI model to use (default: "gpt-4o-mini")
+
+Example:
+
+```bash
+export OPENAI_API_KEY="your-api-key"
+export DEFAULT_MODEL="gpt-4"
+npx bulkai -p emma,rewrite -i ./input -o ./output
 ```
 
 ### Example Command
@@ -45,6 +66,18 @@ BulkAI enables the bulk processing of `.md` and `.txt` files, making it perfect 
 ### 🎨 Custom Prefix and Suffix Support
 
 Easily add custom prefixes and suffixes to your content before sending it to the OpenAI API. This feature is particularly useful for standardizing content, adding disclaimers, or appending signatures. For example, you can use `prefix.md` and `suffix.md` files to define the content you want to prepend or append to your documents.
+
+You can specify multiple presets and files by comma-separating them:
+
+```bash
+npx bulkai -p emma,rewrite,./tmp/file.md -s article,--- -i ./input -o ./output
+```
+
+The tool will:
+
+1. First look for presets in the `presets` directory (e.g., `emma.md`, `rewrite.md`)
+2. Then try to find files at the specified paths (e.g., `./tmp/file.md`)
+3. Combine all found content in the order specified
 
 ### 🚀 OpenAI GPT-4 Integration
 

@@ -51,8 +51,34 @@ if (!process.env.OPENAI_API_KEY) {
 }
 
 // Load prefix and suffix content if provided
-const prefix = options.prefixFile ? await fs.readFile(options.prefixFile, 'utf8') : '';
-const suffix = options.suffixFile ? await fs.readFile(options.suffixFile, 'utf8') : '';
+async function loadPrefixOrSuffix(input) {
+  if (!input) return '';
+  
+  const parts = input.split(',').map(part => part.trim());
+  let content = '';
+  
+  for (const part of parts) {
+    // Check if it's a preset (no path separators)
+    if (!part.includes('/') && !part.includes('\\')) {
+      const presetPath = path.join(__dirname, 'presets', `${part}.md`);
+      if (await fs.pathExists(presetPath)) {
+        content += await fs.readFile(presetPath, 'utf8');
+        continue;
+      }
+    }
+    // Try as a regular file path
+    if (await fs.pathExists(part)) {
+      content += await fs.readFile(part, 'utf8');
+    } else {
+      console.warn(`Warning: ${part} not found as preset or file`);
+    }
+  }
+  
+  return content;
+}
+
+const prefix = await loadPrefixOrSuffix(options.prefixFile);
+const suffix = await loadPrefixOrSuffix(options.suffixFile);
 
 const inputPath = path.resolve(options.inputDir);
 
@@ -60,7 +86,7 @@ const inputPath = path.resolve(options.inputDir);
 const extensions = options.extensions.split(',').map(ext => ext.trim());
 
 // Parse excluded
-const excluded = options.excluded.split(',').map(path => path.trim());
+const excluded = options.excluded ? options.excluded.split(',').map(path => path.trim()) : [];
 
 // Check for required options
 if (!options.inputDir || !options.outputDir) {
@@ -91,7 +117,7 @@ async function processFile(filePath, outputDir, force, hugo) {
 
   // Send content to OpenAI API
   const completion = await openai.chat.completions.create({
-    model: "gpt-4o-mini",
+    model: process.env.DEFAULT_MODEL || "gpt-4o-mini",
     messages: [
       { role: "system", content: "You are a helpful assistant." },
       { role: "user", content: combinedContent },

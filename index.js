@@ -19,13 +19,12 @@ program
   .option('-i, --input-dir <path>', 'Input directory containing files to be processed')
   .option('-o, --output-dir <path>', 'Output directory where the processed files will be saved')
   .option('-f, --force', 'Force overwrite existing files in the output directory')
-  .option('-H, --hugo', 'Enable Hugo front matter processing by removing everything before the first "---" in the AI response')
   .option('-e, --extensions <extensions>', 'Comma-separated list of file extensions to process', '.md,.txt')
   .option('-x, --excluded <parts>', 'Excluded file to be skipped')
   .on('--help', () => {
     console.log('');
     console.log('Example usage:');
-    console.log('  npx bulkai -p prefix.txt -s suffix.txt -i ./input -o ./output -f -H -e .md,.txt');
+    console.log('  npx bulkai -p prefix.txt -s suffix.txt -i ./input -o ./output -f -e .md,.txt');
   });
 
 program.parse(process.argv);
@@ -99,7 +98,7 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-async function processFile(filePath, outputDir, force, hugo) {
+async function processFile(filePath, outputDir, force) {
   const outputFilePath = path.resolve(filePath).replace(inputPath, '');
   // outputPath preserves directory structure
   const outputPath = path.join(outputDir, outputFilePath);
@@ -126,15 +125,6 @@ async function processFile(filePath, outputDir, force, hugo) {
 
   let aiResponse = completion.choices[0].message.content;
 
-  // Hugo flag processing
-  if (hugo) {
-    const hugoMatch = aiResponse.match(/---/g);
-    if (hugoMatch && hugoMatch.length >= 2) {
-      const firstIndex = aiResponse.indexOf('---');
-      aiResponse = aiResponse.slice(firstIndex);
-    }
-  }
-
   // Write the AI's response to the output directory
   await fs.outputFile(outputPath, aiResponse);
 
@@ -155,7 +145,7 @@ async function main() {
       console.log(`Excluded: ${file}`);
       continue;
     }
-    await processFile(file, options.outputDir, options.force, options.hugo);
+    await processFile(file, options.outputDir, options.force);
   }
 }
 

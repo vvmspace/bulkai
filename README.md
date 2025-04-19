@@ -70,14 +70,25 @@ Easily add custom prefixes and suffixes to your content before sending it to the
 You can specify multiple presets and files by comma-separating them:
 
 ```bash
-npx bulkai -p emma,rewrite,./tmp/file.md -s article,--- -i ./input -o ./output
+npx bulkai -p emma,rewrite,./tmp/file.md -s article,hugo -i ./input -o ./output
 ```
 
 The tool will:
 
-1. First look for presets in the `presets` directory (e.g., `emma.md`, `rewrite.md`)
+1. First look for presets in the `presets` directory (e.g., `emma.md`, `rewrite.md`, `hugo.md`)
 2. Then try to find files at the specified paths (e.g., `./tmp/file.md`)
 3. Combine all found content in the order specified
+
+Available presets:
+
+-   `emma`: Emma's writing style and personality
+-   `rewrite`: Content rewriting instructions
+-   `hugo`: Hugo front matter processing
+-   `article`: Article formatting
+-   `---`: Front matter separator
+-   `raw`: Raw content processing
+-   `res`: Response formatting
+-   `shock`: Shock content style
 
 ### 🚀 OpenAI GPT-4 Integration
 
